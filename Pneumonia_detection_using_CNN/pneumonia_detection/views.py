@@ -7,7 +7,7 @@ import os
 
 # Define the correct relative path to the model
 # model_path = os.path.join(os.getcwd(), 'pneumonia_cnn_model.h5')
-model_path = r'C:\Users\umayy\OneDrive\Desktop\Fa\pneumonia_cnn_model.h5'
+model_path = r'C:\Users\umayy\MCA_Main_Project\pneumonia_cnn_model.h5'
 model = load_model(model_path)
 
 def index(request):
@@ -28,6 +28,6 @@ def index(request):
             result = "Normal"
         else:
             result = "Pneumonia"
-        return render(request, 'detection/index.html', {'result': result, 'image': img_path})
-    return render(request, 'detection/index.html')
+        return render(request, 'pneumonia_detection/index.html', {'result': result, 'image': img_path})
+    return render(request, 'pneumonia_detection/index.html')
 

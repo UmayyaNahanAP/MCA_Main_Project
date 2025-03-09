@@ -56,7 +56,9 @@ ROOT_URLCONF = 'Pneumonia_detection_using_CNN.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),  # Add this line to look in the root templates folder
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

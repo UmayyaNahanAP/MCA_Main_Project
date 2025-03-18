@@ -25,9 +25,9 @@ def index(request):
         result = model.predict(test_image)
         class_probabilities = result[0]
         if class_probabilities[0] > class_probabilities[1]:
-            result = "Normal"
+            result = "No Pneumonia Found ✅"
         else:
-            result = "Pneumonia"
+            result = "Pneumonia Detected 🚨"
         return render(request, 'pneumonia_detection/index.html', {'result': result, 'image': img_path})
     return render(request, 'pneumonia_detection/index.html')
 

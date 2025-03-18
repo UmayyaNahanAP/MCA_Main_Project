@@ -7,8 +7,8 @@
 
     <style>
         body {background-color: powderblue;}
-        h1   {color: blue;}
-        p    {color: red;}
+        {% comment %} h1   {color: blue;} {% endcomment %}
+        p    {color: #F08080;}
 
 
 
@@ -30,7 +30,7 @@
   
   .right {
     right: 0;
-    background-color: powderblue;
+    background-color:  #F08080;
   }
   
   .centered {
@@ -45,7 +45,7 @@
   * {box-sizing: border-box}
 body {font-family: Verdana, sans-serif; margin:0}
 
-/* Slideshow container */
+{% comment %} /* Slideshow container */
 .slideshow-container {
   position: relative;
   background: #f1f1f1f1;
@@ -113,10 +113,80 @@ body {font-family: Verdana, sans-serif; margin:0}
 }
 
 /* Add an italic font style to all quotes */
-q {font-style: italic;}
+q {font-style: italic;} {% endcomment %}
 
-/* Add a blue color to the author */
-.author {color: cornflowerblue;}
+
+/* Slideshow container */
+.slideshow-container {
+    position: relative;
+    max-width: 100%;
+    background: #f1f1f1;
+}
+
+/* Slides */
+.mySlides {
+    display: none;
+    padding: 80px;
+    text-align: center;
+    font-size: 24px;
+}
+{% comment %} 
+/* Next & previous buttons */
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -30px;
+    padding: 16px;
+    color: #888;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover, .next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+} {% endcomment %}
+
+/* Dot container */
+.dot-container {
+    text-align: center;
+    padding: 20px;
+    background: #ddd;
+}
+
+/* Dots */
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171;
+}
+
+/* Italic font for quotes */
+q { font-style: italic; }
+
+
+
+{% comment %} /* Add a blue color to the author */
+.author {color: cornflowerblue;} {% endcomment %}
 
 
   {% comment %} .centered img {
@@ -135,7 +205,7 @@ q {font-style: italic;}
           <p>Some text.</p>
 
 
-          <div class="slideshow-container">
+          {% comment %} <div class="slideshow-container">
 
             <div class="mySlides">
               <q>I love you the more in that I believe you had liked me for my own sake and for nothing else</q>
@@ -190,7 +260,79 @@ q {font-style: italic;}
               slides[slideIndex-1].style.display = "block";  
               dots[slideIndex-1].className += " active";
             }
-            </script>
+            </script> {% endcomment %}
+
+
+            <div class="slideshow-container">
+              <div class="mySlides fade">
+                  <q>neumonia is a lung infection that causes inflammation and fluid or pus in the air sacs of the lungs. It can be caused by bacteria, viruses, or fungi. Symptoms include cough, fever, chills, and difficulty breathing. </q>
+              </div>
+      
+              <div class="mySlides fade">
+                  <q>Pneumonia can range in seriousness from mild to life-threatening. It is most serious for infants and young children, people older than age 65, and people with health problems or weakened immune systems.</q>
+              </div>
+      
+              <div class="mySlides fade">
+                  <q>Slide 3: Automatic and manual control.</q>
+              </div>
+      
+              <!-- Navigation buttons -->
+              {% comment %} <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+              <a class="next" onclick="changeSlide(1)">&#10095;</a> {% endcomment %}
+          </div>
+      
+          <!-- Dot indicators -->
+          <div class="dot-container">
+              <span class="dot" onclick="setSlide(0)"></span>
+              <span class="dot" onclick="setSlide(1)"></span>
+              <span class="dot" onclick="setSlide(2)"></span>
+          </div>
+      
+          <script>
+              let slideIndex = 0;
+              let slideInterval;
+      
+              function showSlides(index) {
+                  let slides = document.getElementsByClassName("mySlides");
+                  let dots = document.getElementsByClassName("dot");
+      
+                  if (index >= slides.length) { slideIndex = 0; }
+                  if (index < 0) { slideIndex = slides.length - 1; }
+      
+                  for (let i = 0; i < slides.length; i++) {
+                      slides[i].style.display = "none";
+                      dots[i].classList.remove("active");
+                  }
+      
+                  slides[slideIndex].style.display = "block";
+                  dots[slideIndex].classList.add("active");
+              }
+      
+              function changeSlide(n) {
+                  clearInterval(slideInterval);
+                  showSlides(slideIndex += n);
+                  startSlideshow();
+              }
+      
+              function setSlide(n) {
+                  clearInterval(slideInterval);
+                  slideIndex = n;
+                  showSlides(slideIndex);
+                  startSlideshow();
+              }
+      
+              function startSlideshow() {
+                  slideInterval = setInterval(() => {
+                      slideIndex++;
+                      showSlides(slideIndex);
+                  }, 2000);
+              }
+      
+              document.addEventListener("DOMContentLoaded", () => {
+                  showSlides(slideIndex);
+                  startSlideshow();
+              });
+          </script>
 
         </div>
       </div>

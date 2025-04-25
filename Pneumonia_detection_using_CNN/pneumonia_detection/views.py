@@ -31,3 +31,7 @@ def index(request):
         return render(request, 'pneumonia_detection/index.html', {'result': result, 'image': img_path})
     return render(request, 'pneumonia_detection/index.html')
 
+
+
+# def index2(request):
+#     return render(request,'pneumonia_detection/index.html')

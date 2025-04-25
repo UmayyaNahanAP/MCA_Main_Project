@@ -20,9 +20,9 @@
 # import matplotlib.image as mpimg
 
 
-
-
+import matplotlib.pyplot as plt
 import tensorflow as tf
+import pandas as pd
 import os
 import warnings
 from tensorflow import keras
@@ -30,6 +30,10 @@ from keras import layers
 from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import Dropout, Flatten, Dense ,Conv2D, MaxPooling2D
 from tensorflow.keras.utils import image_dataset_from_directory
+from sklearn.metrics import confusion_matrix
+import numpy as np
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score
+import seaborn as sns
 
 warnings.filterwarnings('ignore')
 
@@ -72,6 +76,15 @@ Validation = keras.utils.image_dataset_from_directory(
 	image_size=(256, 256))
 
 
+Confusion_matrix = keras.utils.image_dataset_from_directory(
+	directory='dataset/confusion_matrix',
+	labels="inferred",
+	label_mode="categorical",
+	batch_size=32,
+	image_size=(256, 256))
+
+
+
 model = tf.keras.models.Sequential([
 	layers.Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),
 	layers.MaxPooling2D(2, 2),
@@ -98,6 +111,38 @@ model = tf.keras.models.Sequential([
 ])
 
 
+# model.compile(
+# 	# specify the loss function to use during training
+# 	loss='binary_crossentropy',
+# 	# specify the optimizer algorithm to use during training
+# 	optimizer='adam',
+# 	# specify the evaluation metrics to use during training
+# 	metrics=['accuracy']
+# )
+
+# history = model.fit(Train,
+# 		epochs=10,
+# 		validation_data=Validation)
+
+# model.save('pneumonia_cnn_model.h5')
+
+
+
+model.summary()
+
+# Plot the model architecture:
+# Plot the keras model
+keras.utils.plot_model(
+    model,
+    # show the shapes of the input/output tensors of each layer
+    show_shapes=True,
+    # show the data types of the input/output tensors of each layer
+    show_dtype=True,
+    # show the activations of each layer in the output graph
+    show_layer_activations=True
+)
+
+
 model.compile(
 	# specify the loss function to use during training
 	loss='binary_crossentropy',
@@ -107,8 +152,110 @@ model.compile(
 	metrics=['accuracy']
 )
 
+
 history = model.fit(Train,
 		epochs=10,
 		validation_data=Validation)
+
+
+# model.evaluate(X_test, y_test)
+
+
+
+#Model Evaluation
+#Let’s visualize the training and validation accuracy with each epoch.
+history_df = pd.DataFrame(history.history)
+history_df.loc[:, ['loss', 'val_loss']].plot()
+history_df.loc[:, ['accuracy', 'val_accuracy']].plot()
+plt.show()
+
+
+plt.figure(figsize=(16, 9))
+plt.plot(history.epoch, history.history['accuracy'])
+plt.title('Model Accuracy')
+plt.legend(['train'], loc='upper left')
+plt.show()
+
+plt.figure(figsize=(16, 9))
+plt.plot(history.epoch, history.history['loss'])
+plt.title('Model Loss')
+plt.legend(['train'], loc='upper left')
+plt.show()
+
+plt.figure(figsize=(16, 9))
+plt.plot(history.epoch, history.history['val_accuracy'])
+plt.title('Model Validation Accuracy')
+plt.legend(['train'], loc='upper left')
+plt.show()
+
+plt.figure(figsize=(16, 9))
+plt.plot(history.epoch, history.history['val_loss'])
+plt.title('Model Validation Loss')
+plt.legend(['train'], loc='upper left')
+plt.show()
+
+
+
+
+# Get the true labels and predictions
+y_true = []
+y_pred = []
+
+for images, labels in Confusion_matrix:
+    predictions = model.predict(images)
+    
+    # Convert predictions and true labels to class indices
+    y_pred.extend(np.argmax(predictions, axis=1))
+    y_true.extend(np.argmax(labels.numpy(), axis=1))
+
+# Generate the confusion matrix
+cm = confusion_matrix(y_true, y_pred)
+
+# Plotting the confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+
+# Customize axes
+plt.xlabel('Predicted Labels', fontsize=14)
+plt.ylabel('True Labels', fontsize=14)
+plt.title('Confusion Matrix', fontsize=16)
+plt.xticks(ticks=[0,1], labels=classes)
+plt.yticks(ticks=[0,1], labels=classes)
+plt.show()
+
+# Optionally print other evaluation metrics
+print('Accuracy:', accuracy_score(y_true, y_pred))
+print('Precision:', precision_score(y_true, y_pred))
+print('Recall:', recall_score(y_true, y_pred))
+
+
+# binary_predictions = []
+# threshold = thresholds[np.argmax(precisions >= 0.80)]
+# for i in predictions:
+#     if i >= threshold:
+#         binary_predictions.append(1)
+#     else:
+#         binary_predictions.append(0)
+
+
+# print('Accuracy on testing set:', accuracy_score(binary_predictions, y_test))
+# print('Precision on testing set:', precision_score(binary_predictions, y_test))
+# print('Recall on testing set:', recall_score(binary_predictions, y_test))
+
+
+# matrix = confusion_matrix(binary_predictions, y_test)
+# plt.figure(figsize=(16, 9))
+# ax= plt.subplot()
+# sns.heatmap(matrix, annot=True, ax = ax)
+
+# # labels, title and ticks
+# ax.set_xlabel('Predicted Labels', size=20)
+# ax.set_ylabel('True Labels', size=20)
+# ax.set_title('Confusion Matrix', size=20) 
+# ax.xaxis.set_ticklabels(labels)
+# ax.yaxis.set_ticklabels(labels)
+
+
+
 
 model.save('pneumonia_cnn_model.h5')
